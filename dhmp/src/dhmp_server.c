@@ -126,7 +126,7 @@ struct dhmp_area *dhmp_area_create(bool has_buddy_sys,size_t length)
 	bool res;
 	
 	/*nvm memory*/
-	addr=malloc(length);
+	addr=nvm_malloc(length);
 	if(!addr)
 	{
 		ERROR_LOG("allocate nvm memory error.");

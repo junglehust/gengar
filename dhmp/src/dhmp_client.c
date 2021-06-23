@@ -260,11 +260,16 @@ void *dhmp_poll_ht_thread(void *data)
 	return NULL;
 }
 
+/**
+ * client_init:
+ * sssys: first of all fetch all metadata from mds,including filename and it's node
+ * 
+ * 
+ */
 void dhmp_client_init()
 {
 	int i;
 	struct itimerspec poll_its;
-	
 	client=(struct dhmp_client *)malloc(sizeof(struct dhmp_client));
 	if(!client)
 	{
@@ -272,6 +277,9 @@ void dhmp_client_init()
 		return ;
 	}
 
+	// fetch all metadata
+		//dhmp_fetch_meta();
+	
 	dhmp_hash_init();
 	dhmp_config_init(&client->config, true);
 	dhmp_context_init(&client->ctx);

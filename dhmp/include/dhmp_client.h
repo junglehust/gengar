@@ -18,6 +18,9 @@ struct dhmp_client{
 	struct dhmp_transport *connect_trans[DHMP_SERVER_NODE_NUM];
 	struct dhmp_transport *poll_trans[DHMP_SERVER_NODE_NUM];
 
+	//sssys :store the global metadata (hasn't desiged,use void* to indicate)
+	void *metadata;
+
 	/*store the dhmp_addr_entry hashtable*/
 	//pthread_mutex_t mutex_ht;
 	struct hlist_head addr_info_ht[DHMP_CLIENT_HT_SIZE];

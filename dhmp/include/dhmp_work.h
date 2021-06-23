@@ -40,6 +40,7 @@ enum dhmp_work_type{
 };
 
 struct dhmp_work{
+	char *filename;
 	enum dhmp_work_type work_type;
 	void *work_data;
 	struct list_head work_entry;

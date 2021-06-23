@@ -75,7 +75,10 @@ int dhmp_get_node_index_from_addr(void *dhmp_addr)
 	res=node_index;
 	return res;
 }
-
+/**	
+ *	malloc_work_handler:client use to handle malloc work
+ *	sssys: add a file name parameter to identify file
+*/
 void dhmp_malloc_work_handler(struct dhmp_work *work)
 {
 	struct dhmp_malloc_work *malloc_work;

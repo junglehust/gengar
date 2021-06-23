@@ -48,6 +48,8 @@
 #define false 0
 #endif
 
+#define NVM NVM
+
 enum dhmp_msg_type{
 	DHMP_MSG_MALLOC_REQUEST,
 	DHMP_MSG_MALLOC_RESPONSE,
@@ -109,6 +111,9 @@ struct dhmp_dram_info{
 	void *nvm_addr;
 	struct ibv_mr dram_mr;
 };
+
+void * nvm_malloc(size_t size);
+void nvm_free(void *addr, size_t size);
 
 /**
  *	dhmp_malloc: remote alloc the size of length region

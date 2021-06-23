@@ -28,6 +28,26 @@ static void dhmp_post_recv(struct dhmp_transport* rdma_trans, void *addr);
 static void dhmp_post_all_recv(struct dhmp_transport *rdma_trans);
 bool dhmp_destroy_dram_entry(void *nvm_addr);
 
+//nvm malloc and free(maybe can use pmdk to replace)
+void * nvm_malloc(size_t size)
+{
+	void *temp;
+#ifdef NVM
+	temp = numa_alloc_onnode(size,4);
+#else
+	temp = malloc(size);
+#endif
+	memset(temp , 0 , size);
+	return temp;//numa_alloc_onnode(size,2);
+}
+void nvm_free(void *addr, size_t size)
+{
+#ifdef NVM
+	return numa_free(addr,size);
+#endif
+	return free(addr);
+}
+
 /**
  *	about watcher handle function
  */
@@ -270,7 +290,11 @@ static bool dhmp_malloc_more_area(struct dhmp_msg* msg,
 
 	return true;
 }
-
+/**
+ * 	malloc_request_handler: server to handle the malloc request
+ * 	sssys:
+ * 
+ */
 static void dhmp_malloc_request_handler(struct dhmp_transport* rdma_trans,
 												struct dhmp_msg* msg)
 {
@@ -1322,19 +1346,22 @@ static int on_cm_established(struct rdma_cm_event* event, struct dhmp_transport*
 
 /**
  *	dhmp_destroy_source: destroy the used RDMA resouces
+    SSSys：reserve the NVM buffer as a persisitent memory,only free rdma resouces
  */
 static void dhmp_destroy_source(struct dhmp_transport* rdma_trans)
 {
 	if(rdma_trans->send_mr.addr)
 	{
 		ibv_dereg_mr(rdma_trans->send_mr.mr);
-		free(rdma_trans->send_mr.addr);
+		//SSSYS
+		// free(rdma_trans->send_mr.addr);
 	}
 
 	if(rdma_trans->recv_mr.addr)
 	{
 		ibv_dereg_mr(rdma_trans->recv_mr.mr);
-		free(rdma_trans->recv_mr.addr);
+		//SSSYS
+		// free(rdma_trans->recv_mr.addr);
 	}
 	
 	rdma_destroy_qp(rdma_trans->cm_id);

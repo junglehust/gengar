@@ -60,6 +60,9 @@ struct dhmp_server{
 	long nvm_total_size;
 
 	struct hlist_head dram_ht[DHMP_DRAM_HT_SIZE];
+
+	//sssys :store the local metadata (hasn't desiged,use void* to indicate)
+	void *metadata;
 };
 
 extern struct dhmp_server *server;
