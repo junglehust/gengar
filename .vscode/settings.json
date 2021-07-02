@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "dhmp_hash.h": "c",
+        "dhmp.h": "c",
+        "dhmp_meta.h": "c"
+    }
+}

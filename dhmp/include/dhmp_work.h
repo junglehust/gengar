@@ -36,11 +36,14 @@ enum dhmp_work_type{
 	DHMP_WORK_WRITE,
 	DHMP_WORK_POLL,
 	DHMP_WORK_CLOSE,
-	DHMP_WORK_DONE
+	DHMP_WORK_DONE,
+
+	//sssys: add some work type
+	DHMP_WORK_FETCHMD,
+	DHMP_WORK_SYNCMD,
 };
 
 struct dhmp_work{
-	char *filename;
 	enum dhmp_work_type work_type;
 	void *work_data;
 	struct list_head work_entry;

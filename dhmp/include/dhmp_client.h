@@ -9,6 +9,8 @@
 //	long	 tv_nsec;/* Nanoseconds */
 //};
 
+
+
 struct dhmp_client{
 	struct dhmp_context ctx;
 	struct dhmp_config config;
@@ -19,7 +21,8 @@ struct dhmp_client{
 	struct dhmp_transport *poll_trans[DHMP_SERVER_NODE_NUM];
 
 	//sssys :store the global metadata (hasn't desiged,use void* to indicate)
-	void *metadata;
+	struct dhmp_meta *metadata;
+
 
 	/*store the dhmp_addr_entry hashtable*/
 	//pthread_mutex_t mutex_ht;

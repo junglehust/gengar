@@ -262,7 +262,7 @@ void *dhmp_poll_ht_thread(void *data)
 
 /**
  * client_init:
- * sssys: first of all fetch all metadata from mds,including filename and it's node
+ * sssys:  fetch all metadata from mds after connection established,including filename and it's node
  * 
  * 
  */
@@ -276,9 +276,6 @@ void dhmp_client_init()
 		ERROR_LOG("alloc memory error.");
 		return ;
 	}
-
-	// fetch all metadata
-		//dhmp_fetch_meta();
 	
 	dhmp_hash_init();
 	dhmp_config_init(&client->config, true);
@@ -403,6 +400,10 @@ void dhmp_client_init()
 	pthread_mutex_init(&client->mutex_work_list, NULL);
 	INIT_LIST_HEAD(&client->work_list);
 	pthread_create(&client->work_thread, NULL, dhmp_work_handle_thread, (void*)client);
+
+
+	// fetch all metadata
+	// client->metadata = dhmp_fetch_meta();
 }
 
 static void dhmp_close_connection(struct dhmp_transport *rdma_trans)

@@ -324,7 +324,6 @@ void *dhmp_work_handle_thread(void *data)
 	while(1)
 	{
 		work=NULL;
-		
 		pthread_mutex_lock(&client->mutex_work_list);
 		if(!list_empty(&client->work_list))
 		{

@@ -29,11 +29,11 @@ static void dhmp_post_all_recv(struct dhmp_transport *rdma_trans);
 bool dhmp_destroy_dram_entry(void *nvm_addr);
 
 //nvm malloc and free(maybe can use pmdk to replace)
-void * nvm_malloc(size_t size)
+void *nvm_malloc(size_t size)
 {
 	void *temp;
 #ifdef NVM
-	temp = numa_alloc_onnode(size,4);
+	temp = numa_alloc_onnode(size,1);
 #else
 	temp = malloc(size);
 #endif

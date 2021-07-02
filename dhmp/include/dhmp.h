@@ -50,6 +50,9 @@
 
 #define NVM NVM
 
+// #define MDS MDS
+// #define DS DS
+
 enum dhmp_msg_type{
 	DHMP_MSG_MALLOC_REQUEST,
 	DHMP_MSG_MALLOC_RESPONSE,
@@ -63,7 +66,13 @@ enum dhmp_msg_type{
 	DHMP_MSG_MEM_CHANGE,
 	DHMP_MSG_SERVER_INFO_REQUEST,
 	DHMP_MSG_SERVER_INFO_RESPONSE,
-	DHMP_MSG_CLOSE_CONNECTION
+	DHMP_MSG_CLOSE_CONNECTION,
+
+	//sssys append some msg type
+	DHMP_MSG_META_FETCH,
+	DHMP_MSG_META_RESPONSE,
+	DHMP_MSG_META_SYNC,
+	DHMP_MSG_META_SYNC_ACK,
 };
 
 /*struct dhmp_msg:use for passing control message*/
@@ -75,6 +84,10 @@ struct dhmp_msg{
 
 /*struct dhmp_addr_info is the addr struct in cluster*/
 struct dhmp_addr_info{
+
+	//sssys :add a file name to identify data after disconnect
+	char *filename;
+
 	int read_cnt;
 	int write_cnt;
 	int node_index;
@@ -112,7 +125,15 @@ struct dhmp_dram_info{
 	struct ibv_mr dram_mr;
 };
 
-void * nvm_malloc(size_t size);
+/**sssys:metadata structure
+ *
+ */
+struct dhmp_meta{
+	void *metadata;
+};
+
+
+void *nvm_malloc(size_t size);
 void nvm_free(void *addr, size_t size);
 
 /**
