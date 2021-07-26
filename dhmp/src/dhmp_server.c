@@ -228,8 +228,7 @@ void dhmp_server_init()
 
 	err=dhmp_transport_listen(server->listen_trans,
 					server->config.net_infos[server->config.curnet_id].port);
-	if(err)
-		exit(- 1);
+	if(err)	exit(-1);
 
 	/*create one area and init area list*/	
 	INIT_LIST_HEAD(&server->area_list);

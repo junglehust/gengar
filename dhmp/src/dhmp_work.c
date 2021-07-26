@@ -78,6 +78,7 @@ int dhmp_get_node_index_from_addr(void *dhmp_addr)
 /**	
  *	malloc_work_handler:client use to handle malloc work
  *	sssys: add a file name parameter to identify file
+ *	already attached IS to dispatch malloc request to specific datanode
 */
 void dhmp_malloc_work_handler(struct dhmp_work *work)
 {
@@ -236,7 +237,7 @@ void dhmp_read_work_handler(struct dhmp_work *work)
 	else
 	{
 #endif
-		sleeptime=(rwork->length/PAGE_SIZE+1)*rdelay/knum;
+		sleeptime=(rwork->length/PAGE_SIZE+1);
 		ts1.tv_sec=sleeptime/NANOSECOND;
 		ts1.tv_nsec=sleeptime-ts1.tv_sec*NANOSECOND;
 		DEBUG_LOG("read ts1 sec %ld nsec %ld",ts1.tv_sec,ts1.tv_nsec);
@@ -300,7 +301,7 @@ out:
 	wwork->done_flag=true;
 }
 
-dhmp_close_work_handler(struct dhmp_work *work)
+void dhmp_close_work_handler(struct dhmp_work *work)
 {
 	struct dhmp_close_work *cwork;
 	struct dhmp_msg msg;
@@ -316,6 +317,16 @@ dhmp_close_work_handler(struct dhmp_work *work)
 
 	cwork->done_flag=true;
 }
+
+//sssys********************/
+void dhmp_fetch_work_handler(struct dhmp_work *work){
+
+}
+
+void dhmp_sync_work_handler(struct dhmp_work *work){
+
+}
+//sssys********************/
 
 void *dhmp_work_handle_thread(void *data)
 {
@@ -354,6 +365,14 @@ void *dhmp_work_handle_thread(void *data)
 				case DHMP_WORK_CLOSE:
 					dhmp_close_work_handler(work);
 					break;
+				//sssys****************/
+				case DHMP_WORK_FETCHMD:
+					dhmp_fetch_work_handler(work);
+					break;
+				case DHMP_WORK_SYNCMD:
+					dhmp_sync_work_handler(work);
+					break;
+				//sssys****************/
 				default:
 					ERROR_LOG("work exist error.");
 					break;

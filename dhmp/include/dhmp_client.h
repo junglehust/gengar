@@ -18,10 +18,16 @@ struct dhmp_client{
 	struct list_head dev_list;
 
 	struct dhmp_transport *connect_trans[DHMP_SERVER_NODE_NUM];
-	struct dhmp_transport *poll_trans[DHMP_SERVER_NODE_NUM];
+
+	//这个轮询探测热度搞dram缓存的策略要怎么修改呢
+	/**
+	 * sssys:去除轮询替换机制 直接由远端自行管理冷热数据
+	 * 
+	 * */
+	// struct dhmp_transport *poll_trans[DHMP_SERVER_NODE_NUM];
 
 	//sssys :store the global metadata (hasn't desiged,use void* to indicate)
-	struct dhmp_meta *metadata;
+	void *metadata;
 
 
 	/*store the dhmp_addr_entry hashtable*/
@@ -63,7 +69,7 @@ struct dhmp_client{
 };
 
 extern struct dhmp_client *client;
-extern int rdelay,wdelay,knum;;
+
 #endif
 
 

@@ -13,16 +13,24 @@
 #include "dhmp_client.h"
 
 struct dhmp_client *client=NULL;
-int rdelay,wdelay,knum;
 
+
+/**
+ * sssys:fetch meta from IS
+ */
+void *dhmp_fetch_meta(){
+
+}
+/**
+ * sssys:by IS
+ */
 static struct dhmp_transport* dhmp_node_select()
 {
 	int i;
 	
 	for(i=0; i<DHMP_SERVER_NODE_NUM; i++)
 	{
-		if(client->fifo_node_index>=DHMP_SERVER_NODE_NUM)
-			client->fifo_node_index=0;
+		client->fifo_node_index %= DHMP_SERVER_NODE_NUM;
 
 		if(client->connect_trans[client->fifo_node_index]!=NULL &&
 			(client->connect_trans[client->fifo_node_index]->trans_state==
@@ -58,8 +66,12 @@ void *dhmp_malloc(size_t length)
 		goto out;
 	}
 
-	/*select which node to alloc nvm memory*/
+	/*select which node to alloc nvm memory
+	 * sssys:attach is to select node
+	 * 
+	 * */
 	rdma_trans=dhmp_node_select();
+
 	if(!rdma_trans)
 	{
 		ERROR_LOG("don't exist remote server.");
@@ -264,7 +276,6 @@ void *dhmp_poll_ht_thread(void *data)
  * client_init:
  * sssys:  fetch all metadata from mds after connection established,including filename and it's node
  * 
- * 
  */
 void dhmp_client_init()
 {
@@ -280,9 +291,7 @@ void dhmp_client_init()
 	dhmp_hash_init();
 	dhmp_config_init(&client->config, true);
 	dhmp_context_init(&client->ctx);
-	rdelay=client->config.simu_infos[0].rdelay;
-	wdelay=client->config.simu_infos[0].wdelay;
-	knum=client->config.simu_infos[0].knum;
+
 	
 	/*init list about rdma device*/
 	INIT_LIST_HEAD(&client->dev_list);

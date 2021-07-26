@@ -35,9 +35,6 @@ static void dhmp_print_config ( struct dhmp_config* total_config_ptr )
 		INFO_LOG ( "nic name %s",total_config_ptr->net_infos[i].nic_name );
 		INFO_LOG ( "addr %s",total_config_ptr->net_infos[i].addr );
 		INFO_LOG ( "port %d",total_config_ptr->net_infos[i].port );
-		INFO_LOG ( "rdelay %d",total_config_ptr->simu_infos[i].rdelay );
-		INFO_LOG ( "wdelay %d",total_config_ptr->simu_infos[i].wdelay );
-		INFO_LOG ( "knum %d",total_config_ptr->simu_infos[i].knum );
 	} 
 }
 

@@ -1,0 +1,28 @@
+client:cn
+server:dn
+三部分：
+    1.cn与dn节点之间的通信(全部由cn发起)：    
+        read： rpc + write_with_imm(dn)
+        write: rpc + write_with_imm(cn) + sync with IS(regularly)
+    2.与元数据服务器的通信：
+        cn: rpc when local metadata cache miss(可以使用hybrid is better中的混合模式)
+        dn: rpc when need sync(read after write / work queue empty)
+    3.IS节点对元数据的处理:
+        ?
+    阶段一：实现各节点间的互通信（数据随便 通信模式对了就行）
+    阶段二：在元数据服务器上实现HiKV-like的索引结构
+    阶段三：在DN上实现文件在SmartNIC上的索引缓存（PM上保存持久化的索引 NIC缓存）以及MVCC模式，实现原型系统
+    阶段四：在原型系统基础上进一步完善
+
+
+    dhmp.h的功能函数 ⫋ WORK ⫋ TRANSPORT ⫋ MESSAGE ⫋ 小函数
+    work是epoll的单位 transport是传输行为的单位 message是rdma消息单位 work也有不需要transport的
+
+   需要把分配-操作-释放分开 增加一个权限使其他cn可以访问
+   cn初始化时先向mds获取全局元数据 了解全部文件名和位置分布并将其缓存在本地
+   * 不需要那么多元数据 把文件名作为key 获取key的数据
+   对每一次的空间分配增加一个文件名作为唯一标识符，每次cn对该文件的操作结束后将地址和文件名缓存到本地
+   cn与dn断开连接后dn不释放空间
+
+   去除轮询替换机制（删除poll connection），直接由DN自行管理冷热数据并在dram和nvm中迁移【研究下热数据迁移机制】
+   增加fetch（cn向mds） 和 sync（dn向mds）两个work类型

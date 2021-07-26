@@ -27,7 +27,7 @@ int comp_sort_addr_entry(const void*a,const void*b)
 	sae_a=(struct dhmp_sort_addr_entry*)a;
 	sae_b=(struct dhmp_sort_addr_entry*)b;
 
-    return sae_a->rwcnt-sae_b->rwcnt;
+    return sae_a->rwcnt - sae_b->rwcnt;
 }
 
 void dhmp_handle_cache_model(int node_index, int length)
@@ -138,25 +138,25 @@ void dhmp_poll_ht_func(void)
 			client->access_region_size+=rw_cnt*(addr_info->nvm_mr.length/1024);
 			client->access_total_num+=rw_cnt;
 
-			/*add nvm read latency ns*/
+			/* nvm read latency ns*/
 			total_benefit_denominator[node_index]+=
 				addr_info->read_cnt*(DHMP_RTT_TIME+DHMP_DRAM_RW_TIME*addr_info->nvm_mr.length/1024+
-				(addr_info->nvm_mr.length/PAGE_SIZE+1)*rdelay/knum);
+				(addr_info->nvm_mr.length/PAGE_SIZE+1));
 
-			/*add nvm write latency ns*/
+			/* nvm write latency ns*/
 			total_benefit_denominator[node_index]+=
 				addr_info->write_cnt*(DHMP_RTT_TIME+DHMP_DRAM_RW_TIME*addr_info->nvm_mr.length/1024+
-				(addr_info->nvm_mr.length/PAGE_SIZE+1)*wdelay/knum);
+				(addr_info->nvm_mr.length/PAGE_SIZE+1));
 
 			if(addr_info->dram_mr.addr!=NULL)
 			{
 				client->access_dram_num[node_index]+=rw_cnt;
 
 				total_benefit_numerator[node_index]+=
-					addr_info->read_cnt*((addr_info->nvm_mr.length/PAGE_SIZE+1)*rdelay/knum);
+					addr_info->read_cnt*((addr_info->nvm_mr.length/PAGE_SIZE+1));
 				
 				total_benefit_numerator[node_index]+=
-					addr_info->write_cnt*((addr_info->nvm_mr.length/PAGE_SIZE+1)*wdelay/knum);
+					addr_info->write_cnt*((addr_info->nvm_mr.length/PAGE_SIZE+1));
 
 				dram_cache_size[node_index]+=addr_info->nvm_mr.length/1024;
 			}
@@ -229,7 +229,7 @@ void dhmp_poll_ht_func(void)
 		}
 	}
 	
-	while(client->poll_num>0);
+	while(client->poll_num>0) ;
 
 	for(i=0; i<DHMP_SERVER_NODE_NUM; i++)
 	{
