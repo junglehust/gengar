@@ -103,8 +103,8 @@ void dhmp_poll_ht_func(void)
 		sa_index[i]=hot_cnt[i]=cold_cnt[i]=0;
 
 		/*set the diff between the request dram size and the response dram size*/
-		dram_size_diff[i]=client->req_dram_size[i]-client->res_dram_size[i];
-		client->req_dram_size[i]=client->res_dram_size[i]=0;
+		dram_size_diff[i]=client->req_dram_size[i] - client->res_dram_size[i];
+		client->req_dram_size[i] = client->res_dram_size[i] = 0;
 
 		if(dram_size_diff[i]>0)
 			client->dram_threshold_policy[i]=false;
