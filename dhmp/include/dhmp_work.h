@@ -39,7 +39,7 @@ enum dhmp_work_type{
 	DHMP_WORK_DONE,
 
 	//sssys: add some work type
-	DHMP_WORK_FETCHMD,
+	DHMP_WORK_FETCH,
 	DHMP_WORK_SYNCMD,
 };
 

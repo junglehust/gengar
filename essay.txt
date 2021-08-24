@@ -14,15 +14,28 @@ server:dn
     阶段三：在DN上实现文件在SmartNIC上的索引缓存（PM上保存持久化的索引 NIC缓存）以及MVCC模式，实现原型系统
     阶段四：在原型系统基础上进一步完善
 
+    需要把分配-操作-释放分开 增加一个权限使其他cn可以访问
+    cn初始化时先向mds获取全局元数据 了解全部文件名和位置分布并将其缓存在本地
+    * 不需要那么多元数据 把文件名作为key 获取key的数据
+    对每一次的空间分配增加一个文件名（生成GUID然后与文件名绑定在一个数据结构）作为唯一标识符，每次cn对该文件的操作结束后将地址和文件名缓存到本地
+    cn与dn断开连接后dn不释放空间
 
-    dhmp.h的功能函数 ⫋ WORK ⫋ TRANSPORT ⫋ MESSAGE ⫋ 小函数
-    work是epoll的单位 transport是传输行为的单位 message是rdma消息单位 work也有不需要transport的
 
-   需要把分配-操作-释放分开 增加一个权限使其他cn可以访问
-   cn初始化时先向mds获取全局元数据 了解全部文件名和位置分布并将其缓存在本地
-   * 不需要那么多元数据 把文件名作为key 获取key的数据
-   对每一次的空间分配增加一个文件名作为唯一标识符，每次cn对该文件的操作结束后将地址和文件名缓存到本地
-   cn与dn断开连接后dn不释放空间
+    原有结构：    dhmp.h的功能函数 ⫋ WORK ⫋ TRANSPORT ⫋ MESSAGE ⫋ 小函数
+        work是epoll的单位 transport是传输行为的单位 message是rdma消息单位 work也有不需要transport的
 
    去除轮询替换机制（删除poll connection），直接由DN自行管理冷热数据并在dram和nvm中迁移【研究下热数据迁移机制】
    增加fetch（cn向mds） 和 sync（dn向mds）两个work类型
+
+   8.24  暂定修改为以下组织方式：
+        1.work.c 修改为server和mdserver的一个 响应 模型   client的响应都在请求之后，单独写在client
+        2.把client的请求函数作为接口暴露给用户 server的请求函数作为特殊情况的触发函数
+        client需要发出的请求：读server、写server、从mds取元数据、向mds写日志（如需要）、建立/释放连接    |client需要响应的请求：响应读完成、响应读元数据完成、响应远端空间分配完成（client的响应都可以作为非阻塞的等待放在请求函数中触发）
+            request            read      write      fetch         append_log       (dis)connect    |  fin（after request）   read       fetch                malloc
+        server需要发出的请求：向mds同步元数据、向mds建立/释放连接                                      |server需要响应的请求：响应读请求、响应写请求、响应连接
+            request             sync           （dis）connect                                       |     handle             read      write    connect
+        mdserver需要发出的请求：无                                                  |mdserver需要响应的请求：响应元数据同步请求、响应元数据获取请求、响应连接、响应写日志/备份（如需要）
+
+        需要的通信函数在transport.c中：
+
+        

@@ -77,8 +77,7 @@ int dhmp_get_node_index_from_addr(void *dhmp_addr)
 }
 /**	
  *	malloc_work_handler:client use to handle malloc work
- *	sssys: add a file name parameter to identify file
- *	already attached IS to dispatch malloc request to specific datanode
+ *	sssys: 新的系统里大概不存在malloc/free这种操作了 读就读 写全是自动分配写
 */
 void dhmp_malloc_work_handler(struct dhmp_work *work)
 {
@@ -166,6 +165,10 @@ out:
 }
 
 
+/**	
+ *	free_work_handler:client use to handle free work
+ *	sssys: 新的系统里大概不存在malloc/free这种操作了 读就读 写全是自动分配写
+*/
 void dhmp_free_work_handler(struct dhmp_work *work)
 {
 	struct dhmp_msg msg;
@@ -207,6 +210,10 @@ out:
 	free_work->done_flag=true;
 }
 
+/**
+ * 
+ *这里应该是已经收到了client的读请求，应该向client给出的位置写数据（write_with_imm
+*/
 void dhmp_read_work_handler(struct dhmp_work *work)
 {
 	struct dhmp_addr_info *addr_info;
@@ -253,7 +260,11 @@ void dhmp_read_work_handler(struct dhmp_work *work)
 out:
 	rwork->done_flag=true;
 }
-	
+
+/**
+ * 
+ *同理，这里已经收到了client的写请求，应该向client发送分配好的区域的地址，由client响应并使用write写入
+*/	
 void dhmp_write_work_handler(struct dhmp_work *work)
 {
 	struct dhmp_addr_info *addr_info;
@@ -328,6 +339,8 @@ void dhmp_sync_work_handler(struct dhmp_work *work){
 }
 //sssys********************/
 
+
+//在新的系统中对任务的handler这些都应该放在server上……
 void *dhmp_work_handle_thread(void *data)
 {
 	struct dhmp_work *work;
@@ -347,28 +360,29 @@ void *dhmp_work_handle_thread(void *data)
 		{
 			switch (work->work_type)
 			{
+				/*
 				case DHMP_WORK_MALLOC:
 					dhmp_malloc_work_handler(work);
 					break;
 				case DHMP_WORK_FREE:
 					dhmp_free_work_handler(work);
 					break;
+				*/
 				case DHMP_WORK_READ:
 					dhmp_read_work_handler(work);
 					break;
 				case DHMP_WORK_WRITE:
 					dhmp_write_work_handler(work);
 					break;
+				/*
 				case DHMP_WORK_POLL:
-					dhmp_poll_ht_func();
+					dhmp_poll_ht_func();	
 					break;
+				*/
 				case DHMP_WORK_CLOSE:
 					dhmp_close_work_handler(work);
 					break;
 				//sssys****************/
-				case DHMP_WORK_FETCHMD:
-					dhmp_fetch_work_handler(work);
-					break;
 				case DHMP_WORK_SYNCMD:
 					dhmp_sync_work_handler(work);
 					break;

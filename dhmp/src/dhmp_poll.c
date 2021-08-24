@@ -77,6 +77,10 @@ void dhmp_handle_cache_model(int node_index, int length)
 	}
 }
 
+
+/*在原系统中需要远端轮询来进行热度检测 现在可以在本地完成冷热数据的检测和向 DRAM/NVM 的迁移
+	修改本函数，尝试去除其中的通信部份并修改
+*/
 void dhmp_poll_ht_func(void)
 {
 	struct dhmp_addr_info *addr_info;

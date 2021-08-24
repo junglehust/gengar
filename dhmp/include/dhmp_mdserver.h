@@ -2,8 +2,15 @@
 #define DHMP_MDSERVER_H
 struct metadata
 {
+	unsigned long GUID;
     char *filename;
-	int node_index;
+	unsigned int node_num;
+
+	void *out_of_date;
+	void *up_to_date;
+	char *dataLog;
+
+	int r_cnt,w_cnt;
 };
 struct serverInfo
 {
@@ -30,8 +37,9 @@ struct dhmp_mdserver{
 
 	struct dhmp_transport *listen_trans;
 	
-	struct dhmp_transport *datanode_trans[DHMP_SERVER_NODE_NUM];
-	struct dhmp_transport *cpnode_trans[DHMP_SERVER_NODE_NUM];
+	struct dhmp_transport *dn_trans[DHMP_SERVER_NODE_NUM];
+	struct dhmp_transport *cn_trans[DHMP_SERVER_NODE_NUM];
+
     void* index_info;
 	struct serverInfo server[DHMP_SERVER_NODE_NUM];
 };
